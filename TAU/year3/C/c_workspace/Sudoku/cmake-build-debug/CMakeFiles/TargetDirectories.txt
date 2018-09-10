@@ -1,0 +1,3 @@
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/cmake-build-debug/CMakeFiles/Sudoku.dir

@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Library/gurobi563/mac64/include/gurobi_c.h
+stdio.h
+-
+
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Game.c
+string.h
+-
+stdlib.h
+-
+stdbool.h
+-
+Game.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Game.h
+Solver.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Solver.h
+ILPSolver.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/ILPSolver.h
+stdio.h
+-
+ctype.h
+-
+
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Game.h
+stdbool.h
+-
+LinkedList.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/LinkedList.h
+
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/ILPSolver.h
+gurobi_c.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/gurobi_c.h
+
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/LinkedList.h
+
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Solver.h
+
