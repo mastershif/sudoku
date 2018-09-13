@@ -123,32 +123,32 @@ Sudoku/fast:
 	$(MAKE) -f CMakeFiles/Sudoku.dir/build.make CMakeFiles/Sudoku.dir/build
 .PHONY : Sudoku/fast
 
-FileHandler.o: FileHandler.c.o
+FileManager.o: FileManager.c.o
 
-.PHONY : FileHandler.o
+.PHONY : FileManager.o
 
 # target to build an object file
-FileHandler.c.o:
-	$(MAKE) -f CMakeFiles/Sudoku.dir/build.make CMakeFiles/Sudoku.dir/FileHandler.c.o
-.PHONY : FileHandler.c.o
+FileManager.c.o:
+	$(MAKE) -f CMakeFiles/Sudoku.dir/build.make CMakeFiles/Sudoku.dir/FileManager.c.o
+.PHONY : FileManager.c.o
 
-FileHandler.i: FileHandler.c.i
+FileManager.i: FileManager.c.i
 
-.PHONY : FileHandler.i
+.PHONY : FileManager.i
 
 # target to preprocess a source file
-FileHandler.c.i:
-	$(MAKE) -f CMakeFiles/Sudoku.dir/build.make CMakeFiles/Sudoku.dir/FileHandler.c.i
-.PHONY : FileHandler.c.i
+FileManager.c.i:
+	$(MAKE) -f CMakeFiles/Sudoku.dir/build.make CMakeFiles/Sudoku.dir/FileManager.c.i
+.PHONY : FileManager.c.i
 
-FileHandler.s: FileHandler.c.s
+FileManager.s: FileManager.c.s
 
-.PHONY : FileHandler.s
+.PHONY : FileManager.s
 
 # target to generate assembly for a file
-FileHandler.c.s:
-	$(MAKE) -f CMakeFiles/Sudoku.dir/build.make CMakeFiles/Sudoku.dir/FileHandler.c.s
-.PHONY : FileHandler.c.s
+FileManager.c.s:
+	$(MAKE) -f CMakeFiles/Sudoku.dir/build.make CMakeFiles/Sudoku.dir/FileManager.c.s
+.PHONY : FileManager.c.s
 
 Game.o: Game.c.o
 
@@ -321,9 +321,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... Sudoku"
-	@echo "... FileHandler.o"
-	@echo "... FileHandler.i"
-	@echo "... FileHandler.s"
+	@echo "... FileManager.o"
+	@echo "... FileManager.i"
+	@echo "... FileManager.s"
 	@echo "... Game.o"
 	@echo "... Game.i"
 	@echo "... Game.s"

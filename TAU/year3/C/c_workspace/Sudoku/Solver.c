@@ -1,141 +1,107 @@
-/*
- * Solver.c
- *
- *  Created on: 20 May 2018
- *      Author: Shif
- */
 #include <string.h> // TODO: delete unused includes
 #include <stdlib.h>
 #include <stdbool.h>
 #include "Solver.h"
 #include <stdio.h>
 #include <ctype.h>
+#include "Game.h"
 
-int already_exists_in_row(int **grid, int row, int num) {
-	for (int col = 0; col < 9; col++) {
-		if (grid[row][col] == num) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
-int already_exists_in_col(int **grid, int col, int num) {
-	for (int row = 0; row < 9; row++) {
-		if (grid[row][col] == num) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
-int already_exists_in_box(int **grid, int startRow, int startCol, int num) {
-	for (int row = 0; row < 3; row++) {
-		for (int col = 0; col < 3; col++) {
-			if (grid[row + startRow][col + startCol] == num) {
-				return 1;
+EmptyCellLocation* getEmptyCellsLocations(int** board, int N) {
+	// first count how many empty cells there are
+	int count_empty_cells = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (board[i][j] == 0) {
+				count_empty_cells++;
 			}
 		}
 	}
-	return 0;
-}
-
-int is_num_allowed(int **grid, int row, int col, int num) {
-	return !already_exists_in_row(grid, row, num)
-			&& !already_exists_in_col(grid, col, num)
-			&& !already_exists_in_box(grid, row - (row % 3), col - (col % 3), num);
-}
-
-int find_empty_cells(int **grid, int N, int *row, int *col) {
-	for (*row = 0; *row < N; (*row)++) {
-		for (*col = 0; *col < N; (*col)++) {
-			if (grid[*row][*col] == 0) {
-				return 1;
+	printf("The number of empty cells in the board inside method getEmptyCellsLocations: %d\n", count_empty_cells);
+	EmptyCellLocation* result = (EmptyCellLocation *)calloc(count_empty_cells, sizeof(EmptyCellLocation));
+    if (!result) {
+        printf("the empty cell locations calloc failed :( \n");
+        return NULL;
+    }
+	// now populate the list of empty cells with the locations of the empty cells
+	int index = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (board[i][j] == 0) {
+				result[index].x = i;
+				result[index].y = j;
+				index++;
 			}
 		}
 	}
-	return 0;
+	return result;
 }
 
-int solveBoard(int **grid, int N) { // TODO: need to be exhaustive and count solutions
-	// step 1: replace the recursion with a stack
-	// the stack will contain grids
-	// each grid represents a state of the game
-	// step 2: make it exhaustive
-	int row = 0;
-	int col = 0;
-
-	if (!find_empty_cells(grid, N, &row, &col)) {
-		return 1; // if there are no empty cells, the board is solved
+int* getPreFilledIntArray(int item_count, int initial_value) {
+	int* result = (int *)calloc(item_count, sizeof(int));
+    if (!result) {
+        printf("the pre-filled int array calloc failed :( \n");
+        return NULL;
+    }
+	for (int i = 0; i < item_count; i++) {
+		result[i] = initial_value;
 	}
+	return result;
+}
 
-	for (int num = 1; num <= N; num++) {
+int numSolutions(Game* game, int N) {
 
-		if (is_num_allowed(grid, row, col, num)) {
-			grid[row][col] = num;
+	// TODO: debug
 
-			if (solveBoard(grid, N)) { // recursive call
-				return 1;
+	// make a copy of the gameBoard,
+	// because counting the number of solutions should not change the game state
+	int** board_copy = copyBoard(game->gameBoard, game->rows, game->columns);
+
+	// first make an array of empty cells locations
+	EmptyCellLocation* empty_cells_locations = getEmptyCellsLocations(game->gameBoard, N);
+	int empty_cells_count = sizeof(empty_cells_locations)/sizeof(empty_cells_locations[0]);
+	printf("The number of empty cells in the board is: %d\n", empty_cells_count);
+
+	// the stack is implemented as an int array
+	// each index corresponds to the matching index in the empty_cells_locations array.
+	// the value in each index represents the value of that cell in the board.
+	// for example:
+	// stack[2] corresponds to the third location in the empty_cells_locations array.
+	// the value stored in stack[2] represents the value to be inserted into
+	// the third location in the empty_cells_locations array.
+	// the stack is initialized with ones because this is the first value to be checked.
+	int* stack = getPreFilledIntArray(empty_cells_count, 1);
+	int stack_top = 0;
+
+	int num_solutions = 0;
+
+	while (stack_top >= 0) {
+
+		EmptyCellLocation current_loc = empty_cells_locations[stack_top];
+		if (stack[stack_top] > N) {
+			// if the value in the stack top is over N, we are done changing this cell
+			// we restore its value to 1
+			stack[stack_top] = 1;
+			// and "pop" the next item in the stack
+			stack_top -= 1;
+
+		} else if (isValidMove2(board_copy, game->m, game->n, N, current_loc.x, current_loc.y, stack[stack_top])) {
+			board_copy[current_loc.x][current_loc.y] = stack[stack_top];
+			if (stack_top < empty_cells_count - 1) {
+				// if we are not at the last empty cell, move on to next cell
+				// basically "push" the next cell to the stack and move to next iteration
+				stack_top += 1;
+				continue;
 			}
-			// if the num is allowed but doesn't lead to a solution, empty the cell:
-			grid[row][col] = EMPTY_CELL;
+			// if we are at the last empty cell and we populated it, we reached a valid solution
+			num_solutions++;
+			// now on to checking the next possible solution
+			stack[stack_top]++;
+
+		} else {
+			// the value is invalid, check next value
+			stack[stack_top]++;
 		}
 	}
 
-	return 0;
+	return num_solutions;
 }
-
-int generatePuzzle(int **grid, int N) {
-	int row = 0;
-	int col = 0;
-
-	if (!find_empty_cells(grid, N, &row, &col)) {
-		return 1;
-	}
-
-	// create an int[N] with randomly ordered ints 1 to N
-	int* array = getRandomOrderArray(1, N, N);
-	// then use this array for the iteration loop below:
-	for (int index = 0; index < N; index++) {
-		int num = array[index];
-
-		if (is_num_allowed(grid, row, col, num)) {
-			grid[row][col] = num;
-
-			if (generatePuzzle(grid, N)) { // recursive call
-				return 1;
-			}
-			// if the num is allowed but doesn't lead to a solution, empty the cell:
-			grid[row][col] = EMPTY_CELL;
-			}
-	}
-
-	// game->gameBoard = grid;
-	return 0;
-}
-
-int * getRandomOrderArray(int min, int max, int N) {
-	int* array = (int *)calloc(N, sizeof(int));
-	if (!array) {
-		printf("the array calloc failed :( \n");
-		return NULL;
-	}
-
-   for (int i = 0; i < N; ++i) {
-	  int digit = (rand() % (max + 1 - min)) + min;
-	  bool alreadyExistsInArray = false;
-	  for (int j = 0; j < N; ++j) {
-		  if (array[j] == digit) {
-			  alreadyExistsInArray = true;
-		  }
-	  }
-	  if (!alreadyExistsInArray) {
-		  array[i] = rand();
-	  } else {
-		  i--;
-	  }
-   }
-
-   return array;
-}
-

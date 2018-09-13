@@ -39,7 +39,7 @@ char* extractArgsForEdit(char *token, Command *command) {
     return token;
 }
 
-char* extractArgsForSet(char* token, Command* command, int nm) {
+char* extractArgsForSet(char* token, Command* command, int mn) {
 	int arguments_count;
 	for (arguments_count = 0; arguments_count < 3;
 			arguments_count = arguments_count + 1) {
@@ -56,7 +56,7 @@ char* extractArgsForSet(char* token, Command* command, int nm) {
 		if (arguments_count == 2) {
 			if (strcmp(token, "0") != 0 && argument == 0) {
 				// invalid argument
-				printf("Error: value not in range 0-%d\n", nm);
+				printf("Error: value not in range 0-%d\n", mn);
 				return MISSING_ARGS;
 			}
 			command->Z = argument;
@@ -99,6 +99,35 @@ char* extractArgsForHint(char* token, Command* command) {
 	return token;
 }
 
+char* extractArgsForGenerate(char* token, Command* command, int mn) {
+    int arguments_count;
+    for (arguments_count = 0; arguments_count < 2;
+         arguments_count = arguments_count + 1) {
+        if (NULL == token) {
+            return MISSING_ARGS;
+        }
+        int argument = atoi(token);
+        // make sure the input argument is a number
+        if (strcmp(token, "0") != 0 && argument == 0) {
+            // invalid argument - NaN
+            printf("Error: value not in range 0-%d\n", mn*mn);
+            return MISSING_ARGS;
+        }
+        if (argument > mn*mn) {
+            // invalid argument - bigger than N*N
+            printf("Error: value not in range 0-%d\n", mn*mn);
+        }
+        if (arguments_count == 0) {
+            command->X = argument;
+        }
+        if (arguments_count == 1) {
+            command->Y = argument;
+        }
+        token = strtok(NULL, " \t\r\n"); // move to the next token in the splitted string
+    }
+    return token;
+}
+
 Command parserParseLine(char* str, int nm) {
 	char* stringCopy = (char*) malloc(strlen(str)+1); // first make a copy of the string
 	strcpy(stringCopy, str);
@@ -131,6 +160,9 @@ Command parserParseLine(char* str, int nm) {
 	if (cmd == HINT) {
 		token = extractArgsForHint(token, &command);
 	}
+    if (cmd == GENERATE) {
+        token = extractArgsForHint(token, &command);
+    }
 	if (NULL != token && strcmp(token, MISSING_ARGS) == 0) {
 		command.cmd = INVALID_LINE; // missing argument
 	}

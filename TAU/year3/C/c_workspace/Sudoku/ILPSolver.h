@@ -3,8 +3,6 @@
 
 #include "gurobi_c.h"
 
-int solve(int m, int n, int **gameBoard);
-
 int solveWithILP(int m, int n, int **gameBoard, int** results);
 
 void freeModel(double *solution, int *constraint1_indices, int *constraint2_indices,

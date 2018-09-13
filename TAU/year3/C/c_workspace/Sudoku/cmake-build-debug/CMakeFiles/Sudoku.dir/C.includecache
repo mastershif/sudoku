@@ -10,23 +10,9 @@
 stdio.h
 -
 
-/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Game.c
-string.h
--
-stdlib.h
--
-stdbool.h
--
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileManager.h
 Game.h
 /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Game.h
-Solver.h
-/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Solver.h
-ILPSolver.h
-/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/ILPSolver.h
-stdio.h
--
-ctype.h
--
 
 /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Game.h
 stdbool.h
@@ -40,5 +26,35 @@ gurobi_c.h
 
 /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/LinkedList.h
 
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Parser.h
+stdbool.h
+-
+
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Solver.h
+Game.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Game.h
+
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/main.c
+string.h
+-
+stdlib.h
+-
+stdbool.h
+-
+stdio.h
+-
+ctype.h
+-
+Game.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Game.h
+Parser.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Parser.h
+FileManager.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileManager.h
+LinkedList.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/LinkedList.h
+ILPSolver.h
+/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/ILPSolver.h
+Solver.h
 /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Solver.h
 

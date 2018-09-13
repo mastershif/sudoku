@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Sudoku.dir/FileHandler.c.o"
+  "CMakeFiles/Sudoku.dir/FileManager.c.o"
   "CMakeFiles/Sudoku.dir/Game.c.o"
   "CMakeFiles/Sudoku.dir/ILPSolver.c.o"
   "CMakeFiles/Sudoku.dir/LinkedList.c.o"

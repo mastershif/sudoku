@@ -14,8 +14,8 @@ include_directories(.)
 
 
 add_executable(Sudoku
-        FileHandler.c
-        FileHandler.h
+        FileManager.c
+        FileManager.h
         Game.c
         Game.h
         ILPSolver.c

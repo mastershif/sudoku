@@ -2,10 +2,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "FileHandler.h"
+#include "FileManager.h"
 #include "LinkedList.h"
-
-// TODO: change file name to FileManager instead of FileHandler
 
 int loadPuzzleFromFile(char* filename, Game* game) {
 	FILE* inputfile;
@@ -120,23 +118,6 @@ int loadPuzzleFromFile(char* filename, Game* game) {
 	    column = 0;
 	    row++;
 	}
-
-//	printf("printing the game board content again: \n");
-//	for (int i = 0; i <  game->n*game->m; i++) {
-//		for (int j = 0; j < game->n*game->m; j++) {
-//			printf("%d ", game->gameBoard[i][j]);
-//		}
-//		printf("\n");
-//	}
-//
-//	printf("printing the fixed cells array: \n");
-//	for (int i = 0; i <  game->n*game->m; i++) {
-//		for (int j = 0; j < game->n*game->m; j++) {
-//			printf("%d ", game->fixedCells[i][j]);
-//		}
-//		printf("\n");
-//	}
-//	printf("the count of fixed cells is: %d\n", game->fixedCount);
 
 	fclose(inputfile);
 	if (line) {

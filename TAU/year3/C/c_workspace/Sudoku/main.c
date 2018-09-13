@@ -11,9 +11,11 @@
 #include <ctype.h>
 #include "Game.h"
 #include "Parser.h"
-#include "FileHandler.h"
+#include "FileManager.h"
 #include "LinkedList.h"
 #include "ILPSolver.h"
+#include "Solver.h"
+
 #define ERROR_MESSAGE "ERROR: invalid command\n"
 
 typedef enum {
@@ -194,10 +196,6 @@ int main() {
                 int solver_result = solveWithILP(game->m, game->n, game->gameBoard, game->gameSolution);
                 if (solver_result == 0) {
                     printf("Validation passed: board is solvable\n");
-
-                    // TODO: remove this part later
-                    printGameSolution(game);
-
                 } else {
                     printf("Validation failed: board is unsolvable\n");
                 }
@@ -209,6 +207,10 @@ int main() {
 				printf(ERROR_MESSAGE);
 			} else {
                 int generate_result = generate(game, command.X, command.Y);
+                printf("generating a new game returned %d\n", generate_result);
+                if (generate_result == 0) {
+                    printBoard(game, mark_errors);
+                }
 			}
 		}
 
@@ -361,9 +363,6 @@ int main() {
                 if (solver_result == 1) {
                     printf("Error: board is unsolvable\n");
                 } else {
-                    // TODO: remove this part later
-                    printGameSolution(game);
-
                     printf("Hint: set cell to %d\n", game->gameSolution[command.X - 1][command.Y - 1]);
                 }
 			}
@@ -378,7 +377,7 @@ int main() {
                     printf("Error: board contains erroneous values\n");
                 } else {
                     // run the exhaustive backtracking algorithm
-					int number_of_solutions = numSolutions(game);
+					int number_of_solutions = numSolutions(game, game->m*game->n);
                     // print out how many solutions exist
 					printf("Number of solutions: %d\n",number_of_solutions);
 					if (number_of_solutions == 1) {
@@ -435,5 +434,5 @@ int main() {
 		}
 	}
 
-	return 0;
+	// return 0;
 }

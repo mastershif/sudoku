@@ -67,6 +67,8 @@ void setValue(Game* game, int row, int col, int value);
  */
 bool isValidMove(Game* game, int row,int col, int value);
 
+bool isValidMove2(int** board, int m, int n, int N, int row, int col, int value);
+
 /**
  * On success, the function prints the game board. If an error occurs, then the
  * function does nothing.
@@ -101,6 +103,8 @@ bool isNoError(Game* game);
  */
 void initBoard(Game* game);
 
-int numSolutions(Game *game);
+// int numSolutions(Game *game);
+
+int** copyBoard(int **gameBoard, int rows, int columns);
 
 #endif /* GAME_H_ */

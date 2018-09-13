@@ -57,18 +57,18 @@ include CMakeFiles/Sudoku.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Sudoku.dir/flags.make
 
-CMakeFiles/Sudoku.dir/FileHandler.c.o: CMakeFiles/Sudoku.dir/flags.make
-CMakeFiles/Sudoku.dir/FileHandler.c.o: ../FileHandler.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Sudoku.dir/FileHandler.c.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Sudoku.dir/FileHandler.c.o   -c /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileHandler.c
+CMakeFiles/Sudoku.dir/FileManager.c.o: CMakeFiles/Sudoku.dir/flags.make
+CMakeFiles/Sudoku.dir/FileManager.c.o: ../FileManager.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Sudoku.dir/FileManager.c.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Sudoku.dir/FileManager.c.o   -c /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileManager.c
 
-CMakeFiles/Sudoku.dir/FileHandler.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Sudoku.dir/FileHandler.c.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileHandler.c > CMakeFiles/Sudoku.dir/FileHandler.c.i
+CMakeFiles/Sudoku.dir/FileManager.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Sudoku.dir/FileManager.c.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileManager.c > CMakeFiles/Sudoku.dir/FileManager.c.i
 
-CMakeFiles/Sudoku.dir/FileHandler.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Sudoku.dir/FileHandler.c.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileHandler.c -o CMakeFiles/Sudoku.dir/FileHandler.c.s
+CMakeFiles/Sudoku.dir/FileManager.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Sudoku.dir/FileManager.c.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileManager.c -o CMakeFiles/Sudoku.dir/FileManager.c.s
 
 CMakeFiles/Sudoku.dir/Game.c.o: CMakeFiles/Sudoku.dir/flags.make
 CMakeFiles/Sudoku.dir/Game.c.o: ../Game.c
@@ -150,7 +150,7 @@ CMakeFiles/Sudoku.dir/Solver.c.s: cmake_force
 
 # Object files for target Sudoku
 Sudoku_OBJECTS = \
-"CMakeFiles/Sudoku.dir/FileHandler.c.o" \
+"CMakeFiles/Sudoku.dir/FileManager.c.o" \
 "CMakeFiles/Sudoku.dir/Game.c.o" \
 "CMakeFiles/Sudoku.dir/ILPSolver.c.o" \
 "CMakeFiles/Sudoku.dir/LinkedList.c.o" \
@@ -161,7 +161,7 @@ Sudoku_OBJECTS = \
 # External object files for target Sudoku
 Sudoku_EXTERNAL_OBJECTS =
 
-Sudoku: CMakeFiles/Sudoku.dir/FileHandler.c.o
+Sudoku: CMakeFiles/Sudoku.dir/FileManager.c.o
 Sudoku: CMakeFiles/Sudoku.dir/Game.c.o
 Sudoku: CMakeFiles/Sudoku.dir/ILPSolver.c.o
 Sudoku: CMakeFiles/Sudoku.dir/LinkedList.c.o

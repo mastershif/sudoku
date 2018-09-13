@@ -84,10 +84,10 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileHandler.c">
+		<Unit filename="/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileManager.c">
 			<Option target="Sudoku"/>
 		</Unit>
-		<Unit filename="/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileHandler.h">
+		<Unit filename="/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/FileManager.h">
 			<Option target="Sudoku"/>
 		</Unit>
 		<Unit filename="/Users/Shif/Documents/TAU/year3/C/c_workspace/Sudoku/Game.c">

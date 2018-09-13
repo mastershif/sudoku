@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "Game.h"
-#include "Solver.h"
 #include "ILPSolver.h"
 #include <stdio.h>
 #include <ctype.h>
@@ -134,6 +133,54 @@ Game* createEmptyGame() {
 	game->current_move = NULL;
 
 	return game;
+}
+
+bool isValidMove2(int** board, int m, int n, int N, int row, int col, int value) {
+    bool legalMove = true;
+    if (value == 0) {
+        return legalMove;
+    }
+    int blockStartRow;
+    int blockStartColumn;
+
+    // already exists in row?
+    for (int i = 0; i < N; i++) {
+        if (col == i) {
+            continue;
+        }
+        if (value == board[row][i]) {
+            legalMove = false;
+        }
+    }
+
+    // already exists in column?
+    for (int j = 0; j < N; j++) {
+        if (row == j) {
+            continue;
+        }
+        if (value == board[j][col]) {
+            legalMove = false;
+        }
+    }
+
+    // already exists in block?
+    int i = blockStartRow = row - (row%m); // block rows
+    int j = blockStartColumn = col - (col%n); // block columns
+    for (; i < blockStartRow + m; i++) {
+        for (; j < blockStartColumn + n; j++) {
+            if (i == row && j == col) {
+                continue;
+            }
+            if (board[i][j] == value) {
+                legalMove = false;
+            }
+        }
+    }
+
+    if (!legalMove) {
+        printf("%s", "Error: value is invalid\n");
+    }
+    return legalMove;
 }
 
 bool isValidMove(Game* game, int row, int col, int value) {
@@ -456,52 +503,75 @@ void freeBoardMemory(int** board, int rows) {
     free(board);
 }
 
-int getRandomLegalValue(Game* game, int row, int col) {
+int getPossibleValues(Game* game, int row, int col, int *possibleValidValues) {
+    int numberOfValidValues;
+    int value;
+    int N = game->m*game->n;
+
+    numberOfValidValues = 0;
+    for (value = 1; value <= N; value++) {
+        if (isValidMove2(game->gameBoard, game->m, game->n, N, row, col, value)) {
+            possibleValidValues[numberOfValidValues] = value;
+            numberOfValidValues++;
+        }
+    }
+    // at this point the array of possible valid values starts with
+    // numberOfValidValues values, followed by N - numberOfValidValues zeroes.
+    return numberOfValidValues;
+}
+
+int getRandomValidValue(Game *game, int row, int col) {
 
     // strategy:
-    // find out which are all the valid values for that cell
-    // randomly choose one of the valid values
+    // 1. find out what are all the valid values for that cell
+    // 2. randomly choose one of the valid values
 
-    int *possibleLegalVals;
-    int N, numberOfLegalValues, randomIndex, randomValue;
+    int *possibleValidValues;
+    int N = game->m*game->n;
+    int numberOfValidValues, randomIndex, randomValue;
 
-    N = game->N;
-    possibleLegalVals = (int *)calloc((size_t)N, sizeof(int));
-    if (possibleLegalVals == NULL) {
-        printCallocFailed();
-        exit(EXIT_FAILURE);
+    // callocating an int array of size N to hold possible valid values
+    possibleValidValues = (int *)calloc((size_t)N, sizeof(int));
+    if (possibleValidValues == NULL) {
+        printf("Error: could not callocate memory for possibleValidValues\n");
+        exit(1);
     }
 
-    numberOfLegalValues = getPossibleValues(game, row, col, possibleLegalVals);
-    if (numberOfLegalValues == 0) { /* No possible values for cell <row, col> */
-        return INVALID;
+    numberOfValidValues = getPossibleValues(game, row, col, possibleValidValues);
+    if (numberOfValidValues == 0) {
+        // no possible values for cell (row, col)
+        return 0;
     }
-    /* Randomly choose an index between 0 to (numberOfLegalValues - 1) inclusive */
-    randomIndex = rand() % numberOfLegalValues;
-    randomValue = possibleLegalVals[randomIndex];
+    // choose a random index between 0 to (numberOfValidValues - 1)
+    randomIndex = rand() % numberOfValidValues;
+    randomValue = possibleValidValues[randomIndex];
 
-    free(possibleLegalVals);
+    free(possibleValidValues);
     return randomValue;
 }
 
 int fillXCellsRandomly(Game *game, int X) {
+    // keep a record of the already chosen cells
     int** alreadyChosenCells = allocateBoardMemory(game->rows, game->columns);
 
-    int counter, randomRow, randomCol, randomValue, N = game->m*game->n;
+    int counter = 0;
+    int N = game->m*game->n;
+    int randomRow, randomCol, randomValue;
 
-    counter = 0;
     while (counter < X) {
         randomRow = rand() % N;
         randomCol = rand() % N;
 
+        // make sure this cell was not already chosen
         while (alreadyChosenCells[randomRow][randomCol] == 1) {
             randomRow = rand() % N;
             randomCol = rand() % N;
         }
-        randomValue = getRandomLegalValue(game, randomRow, randomCol);
-        if (randomValue == INVALID) {
+        randomValue = getRandomValidValue(game, randomRow, randomCol);
+        if (randomValue == 0) {
+            // failed to find a valid value for current cell, got to start over
             freeBoardMemory(alreadyChosenCells, game->rows);
-            return 0;
+            return 1;
         }
         game->gameBoard[randomRow][randomCol] = randomValue;
         alreadyChosenCells[randomRow][randomCol] = 1;
@@ -509,7 +579,45 @@ int fillXCellsRandomly(Game *game, int X) {
     }
 
     freeBoardMemory(alreadyChosenCells, game->rows);
-    return 1;
+    return 0;
+}
+
+int clearAllButYCellsRandomly(Game *game, int Y) {
+    // keep a record of the already cleared cells
+    int** alreadyClearedCells = allocateBoardMemory(game->rows, game->columns);
+
+    int counter = 1;
+    int N = game->m*game->n;
+    int numberOfCellsToClear = (N * N) - Y;
+    // numberOfCellsToClear should never be negative,
+    // such error should be handled at the command parsing stage
+    int randomRow, randomCol;
+
+    while (counter <= numberOfCellsToClear) {
+        randomRow = rand() % N;
+        randomCol = rand() % N;
+
+        // make sure this cell was not already cleared
+        while (alreadyClearedCells[randomRow][randomCol] == 1) {
+            randomRow = rand() % N;
+            randomCol = rand() % N;
+        }
+
+        game->gameBoard[randomRow][randomCol] = 0;
+        alreadyClearedCells[randomRow][randomCol] = 1;
+        counter++;
+    }
+
+    freeBoardMemory(alreadyClearedCells, game->rows);
+    return 0;
+}
+
+void copySolutionToBoard(Game* game) {
+    for (int i = 0; i < game->rows; i++) {
+        for (int j = 0; j < game->columns; j++) {
+            game->gameBoard[i][j] = game->gameSolution[i][j];
+        }
+    }
 }
 
 int generate(Game* game, int X, int Y) {
@@ -520,25 +628,24 @@ int generate(Game* game, int X, int Y) {
         return 1;
     }
 
-    int succeeded;
+    int failedToFillXCells;
+    int failedToSolve;
 
     for (int i = 0; i < 1000; i++) {
 
         // step 1: randomly choose X cells and fill them with random values
         // if at any point there is a cell that doesn't have a legal value,
         // start again, up to 1000 times.
-        succeeded = fillXCellsRandomly(game, X);
-        if (!succeeded) { // failed to fill X cells randomly with legal values
+        failedToFillXCells = fillXCellsRandomly(game, X);
+        if (failedToFillXCells) { // failed to fill X cells randomly with legal values
             clearGameBoardAndSolution(game);
             continue; // move on to next iteration
         }
-        // mark the X cells as fixed before solving
-        markNonZeroCellsAsFixed(game);
 
         // step 2: run ILP and solve the board. If the board is not solvable,
         // start again, up to 1000 times.
-        succeeded = solveWithILP(game, game->m, game->n, game->gameSolution);
-        if (!succeeded) {
+        failedToSolve = solveWithILP(game->m, game->n, game->gameBoard, game->gameSolution);
+        if (failedToSolve) {
             clearGameBoardAndSolution(game);
             continue; // move on to next iteration
         }
@@ -546,23 +653,21 @@ int generate(Game* game, int X, int Y) {
         break;
     }
 
-    if (!succeeded) {
+    if (failedToFillXCells || failedToSolve) {
         printf("Error: puzzle generator failed\n");
         return 1;
     }
 
-    // step 3: clear all cells except for Y cells
-    // clearYCellsRandomly(game, Y);
+    // copy the solution to the game board
+    copySolutionToBoard(game);
+
+    // step 3: clear all cells except for Y cells, in the gameBoard
+    clearAllButYCellsRandomly(game, Y);
+
+    // mark the Y cells as fixed
     markNonZeroCellsAsFixed(game);
 
     return 0;
-}
-
-int numSolutions(Game *game) {
-	int result = 0;
-	int** board_copy = copyBoard(game->gameBoard, game->rows, game->columns);
-	result = solveBoard(board_copy, game->m*game->n);
-	return result;
 }
 
 bool isNoError(Game* game) {
@@ -606,9 +711,7 @@ void destroyGame(Game* game) {
 	if (game->moves != NULL) {
 	    free(game->moves);
 	}
-//    if (game->current_move != NULL) {
-//        free(game->current_move);
-//    }
+
 	// free game itself
 	free(game);
 }
