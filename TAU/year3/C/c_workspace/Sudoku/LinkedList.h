@@ -6,16 +6,13 @@
 #define SUDOKU_LINKEDLIST_H
 
 typedef struct node_t {
-    int X;
-    int Y;
-    int value;
-    int prev_value;
+    int **board;
     struct node_t* next;
     struct node_t* prev;
 } Node;
 
-Node* createNewNode(int X, int Y, int value, int prev_value);
+Node* createNewNode(int **gameBoard, int rows, int cols);
 
-Node* InsertAtHead(int X, int Y, int value, int prev_value, Node* head);
+int freeLinkedList(Node* listStart, int N);
 
 #endif //SUDOKU_NODE_H

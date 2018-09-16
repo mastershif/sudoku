@@ -16,6 +16,7 @@ CMakeFiles/Sudoku.dir/ILPSolver.c.o: /Library/gurobi563/mac64/include/gurobi_c.h
 CMakeFiles/Sudoku.dir/ILPSolver.c.o: ../ILPSolver.c
 CMakeFiles/Sudoku.dir/ILPSolver.c.o: ../ILPSolver.h
 
+CMakeFiles/Sudoku.dir/LinkedList.c.o: ../Game.h
 CMakeFiles/Sudoku.dir/LinkedList.c.o: ../LinkedList.c
 CMakeFiles/Sudoku.dir/LinkedList.c.o: ../LinkedList.h
 

@@ -16,7 +16,8 @@ int loadPuzzleFromFile(char* filename, Game* game) {
 
 	char* line = NULL;
 	size_t len = 0;
-	ssize_t read;
+	// ssize_t read;
+	int read;
 	// the first line is "m n" : m the number of rows in each box
 	// read the first line
 	read = getline(&line, &len, inputfile);
@@ -26,19 +27,12 @@ int loadPuzzleFromFile(char* filename, Game* game) {
 	game->rows = game->n*game->m;
 	game->columns = game->n*game->m;
 	game->size = game->rows*game->columns;
-	game->moves = NULL;
-	game->current_move = NULL;
-
-//	game->moves = (Node *)calloc(1, sizeof(Node));
-//	if(game->moves == NULL) {
-//		printf("Error: could not callocate memory for moves\n");
-//		exit(1);
-//	}
-//    game->current_move = (Node *)calloc(1, sizeof(Node));
-//	if(game->current_move == NULL) {
-//		printf("Error: could not callocate memory for current_move\n");
-//		exit(1);
-//	}
+	game->moves_count = 0;
+	if (game->moves_anchor != NULL) {
+	    freeLinkedList(game->moves_anchor, game->m*game->n);
+	}
+	game->moves_anchor = NULL;
+	game->moves_head = NULL;
 
 	// allocate memory for the game board
 	game->gameBoard = (int **)calloc(game->n*game->m, sizeof(int *));
@@ -114,7 +108,6 @@ int loadPuzzleFromFile(char* filename, Game* game) {
 	    	column++;
 	    	token = strtok(NULL, " ");
 	    }
-	    printf("\n");
 	    column = 0;
 	    row++;
 	}
@@ -123,6 +116,10 @@ int loadPuzzleFromFile(char* filename, Game* game) {
 	if (line) {
 		free(line);
 	}
+
+	// save a copy of the gameBoard's original state
+    game->originalBoard = copyBoard(game->gameBoard, game->rows, game->columns);
+
 	return 0;
 }
 

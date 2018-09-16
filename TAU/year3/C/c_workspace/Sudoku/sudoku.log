@@ -5655,3 +5655,48 @@ Thread count was 4 (of 4 available processors)
 
 Optimal solution found (tolerance 1.00e-04)
 Best objective 0.000000000000e+00, best bound 0.000000000000e+00, gap 0.0%
+
+Gurobi 5.6.3 (mac64) logging started Sun Sep 16 19:09:19 2018
+
+Optimize a model with 149 rows, 216 columns and 869 nonzeros
+Found heuristic solution: objective 0
+Presolve removed 40 rows and 97 columns
+Presolve time: 0.01s
+Presolved: 109 rows, 119 columns, 472 nonzeros
+Variable types: 0 continuous, 119 integer (119 binary)
+
+Explored 0 nodes (0 simplex iterations) in 0.01 seconds
+Thread count was 4 (of 4 available processors)
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 0.000000000000e+00, best bound 0.000000000000e+00, gap 0.0%
+
+Gurobi 5.6.3 (mac64) logging started Sun Sep 16 19:13:46 2018
+
+Optimize a model with 149 rows, 216 columns and 869 nonzeros
+Found heuristic solution: objective 0
+Presolve removed 40 rows and 97 columns
+Presolve time: 0.00s
+Presolved: 109 rows, 119 columns, 472 nonzeros
+Variable types: 0 continuous, 119 integer (119 binary)
+
+Explored 0 nodes (0 simplex iterations) in 0.01 seconds
+Thread count was 4 (of 4 available processors)
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 0.000000000000e+00, best bound 0.000000000000e+00, gap 0.0%
+
+Gurobi 5.6.3 (mac64) logging started Sun Sep 16 19:14:01 2018
+
+Optimize a model with 150 rows, 216 columns and 870 nonzeros
+Found heuristic solution: objective 0
+Presolve removed 45 rows and 105 columns
+Presolve time: 0.01s
+Presolved: 105 rows, 111 columns, 441 nonzeros
+Variable types: 0 continuous, 111 integer (111 binary)
+
+Explored 0 nodes (0 simplex iterations) in 0.01 seconds
+Thread count was 4 (of 4 available processors)
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 0.000000000000e+00, best bound 0.000000000000e+00, gap 0.0%

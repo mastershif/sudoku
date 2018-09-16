@@ -1,16 +1,10 @@
-/*
- * Game.c
- *
- *  Created on: 12 May 2018
- *      Author: Shif
- */
 #include <string.h> // TODO: delete unused includes
 #include <stdlib.h>
 #include <stdbool.h>
-#include "Game.h"
-#include "ILPSolver.h"
 #include <stdio.h>
 #include <ctype.h>
+#include "Game.h"
+#include "ILPSolver.h"
 
 Game* createGame(int fixedAmount) {
 	Game* game=(Game *)calloc(1, sizeof(Game));
@@ -20,44 +14,10 @@ Game* createGame(int fixedAmount) {
 	}
 
 	game->fixedCount = fixedAmount;
-    game->moves = NULL;
-    game->current_move = NULL;
-	// generatePuzzle(game->gameSolution);
-//	int row;
-//	int col;
-//	int count = 0;
-//	while (count<fixedAmount) {
-//		row = rand() % N;
-//		col= rand() % N;
-//		if (game->fixedCells[row][col] == 0){
-//			game->fixedCells[row][col] = 1;
-//			count++;
-//		}
-//	}
-//	row = 0;
-//	col = 0;
-//	for (; row < N; row++) {
-//		for (;col < N; col++) {
-//			if (game->fixedCells[row][col] == 1) {
-//				game->gameBoard[row][col] = game->gameSolution[row][col];
-//			}
-//		}
-//	}
+	game->moves_count = 0;
+    game->moves_anchor = NULL;
+    game->moves_head = NULL; // moves_head is the current_move
 	return game;
-
-	// Create an empty board
-
-	// Use randomized backtracking to get a random solved board
-
-	// store the solution inside int gameSolution[N][N]
-
-	// Repeat fixedAmount times:
-	//  Randomly select an empty cell <X, Y>. If cell <X,Y> is "fixed" (was already selected),
-	//  repeat randomizing X,Y until cell <X,Y> is not fixed.
-	//  Mark the chosen cell as a "fixed" cell.
-
-	// Clear all cells that are not fixed (NxN – fixedAmount cells that were not selected).
-
 }
 
 Game* createEmptyGame() {
@@ -129,19 +89,23 @@ Game* createEmptyGame() {
 		}
 	}
 
-	game->moves = NULL;
-	game->current_move = NULL;
+	// save a copy of the gameBoard's original state
+    game->originalBoard = copyBoard(game->gameBoard, game->rows, game->columns);
+
+    game->moves_count = 0;
+    game->moves_anchor = NULL;
+    game->moves_head = NULL;
 
 	return game;
 }
 
-bool isValidMove2(int** board, int m, int n, int N, int row, int col, int value) {
+bool isValidMove(int **board, int m, int n, int N, int row, int col, int value) {
     bool legalMove = true;
     if (value == 0) {
         return legalMove;
     }
-    int blockStartRow;
-    int blockStartColumn;
+    int blockStartRow = row - (row % m);
+    int blockStartColumn = col - (col%n);
 
     // already exists in row?
     for (int i = 0; i < N; i++) {
@@ -150,6 +114,7 @@ bool isValidMove2(int** board, int m, int n, int N, int row, int col, int value)
         }
         if (value == board[row][i]) {
             legalMove = false;
+            return legalMove;
         }
     }
 
@@ -160,81 +125,30 @@ bool isValidMove2(int** board, int m, int n, int N, int row, int col, int value)
         }
         if (value == board[j][col]) {
             legalMove = false;
+            return legalMove;
         }
     }
 
     // already exists in block?
-    int i = blockStartRow = row - (row%m); // block rows
-    int j = blockStartColumn = col - (col%n); // block columns
-    for (; i < blockStartRow + m; i++) {
-        for (; j < blockStartColumn + n; j++) {
+    for (int i = blockStartRow; i < blockStartRow + m; i++) {
+        for (int j = blockStartColumn; j < blockStartColumn + n; j++) {
             if (i == row && j == col) {
                 continue;
             }
             if (board[i][j] == value) {
                 legalMove = false;
+                return legalMove;
             }
         }
     }
 
-    if (!legalMove) {
-        printf("%s", "Error: value is invalid\n");
-    }
     return legalMove;
-}
-
-bool isValidMove(Game* game, int row, int col, int value) {
-	bool legalMove = true;
-	if (value == 0) {
-	    return legalMove;
-	}
-	int blockStartRow;
-	int blockStartColumn;
-
-	// already exists in row?
-	for (int i = 0; i < game->columns; i++) {
-		if (col == i) {
-			continue;
-		}
-		if (value == game->gameBoard[row][i]) {
-			legalMove = false;
-		}
-	}
-
-    // already exists in column?
-	for (int j = 0; j < game->rows; j++) {
-	    if (row == j) {
-	        continue;
-	    }
-	    if (value == game->gameBoard[j][col]) {
-	        legalMove = false;
-	    }
-	}
-
-	// already exists in block?
-	int i = blockStartRow = row - (row%game->m); // block rows
-	int j = blockStartColumn = col - (col%game->n); // block columns
-	for (; i < blockStartRow + game->m; i++) {
-		for (; j < blockStartColumn + game->n; j++) {
-			if (i == row && j == col) {
-				continue;
-			}
-			if (game->gameBoard[i][j] == value) {
-				legalMove = false;
-			}
-		}
-	}
-
-	if (!legalMove) {
-		printf("%s", "Error: value is invalid\n");
-	}
-	return legalMove;
 }
 
 void setValue(Game* game, int row, int col, int value) {
 
 	// check if the move is valid
-	bool validMove = isValidMove(game, row - 1, col - 1, value);
+	bool validMove = isValidMove(game->gameBoard, game->m, game->n, game->m * game->n, row - 1, col - 1, value);
 
 	// set the value anyway
     game->gameBoard[row - 1][col - 1] = value;
@@ -250,6 +164,78 @@ void setValue(Game* game, int row, int col, int value) {
 	if (isBoardFull(game) && isNoError(game)) {
 		printf("Puzzle solved successfully\n");
 	}
+}
+
+Node* insertNewMove(Game *game) {
+    // printf("was ordered to insert move node with x = %d, y = %d, value = %d\n", X, Y, value);
+    Node* newNode = createNewNode(game->gameBoard, game->rows, game->columns);
+    // printf("newNode was created with x = %d, y = %d, value = %d\n", newNode->X, newNode->Y, newNode->value);
+
+    // if there are more than zero moves but all of them were undone
+    if (game->moves_head == NULL && game->moves_anchor != NULL) {
+        freeLinkedList(game->moves_anchor, game->m*game->n);
+        game->moves_count = 0;
+        game->moves_anchor = NULL;
+    }
+
+    // if this is the first move ever:
+    if (game->moves_count == 0) {
+        game->moves_anchor = newNode;
+        game->moves_head = newNode;
+        game->moves_count = 1;
+        game->gameBoard = newNode->board;
+        return game->moves_head;
+    }
+
+    // free the moves after what was the current move (the head) up until now
+    // (clear the redo part of the list)
+
+    if (game->moves_head->next != NULL) {
+        // free the next nodes
+        int countOfNodesFreed = freeLinkedList(game->moves_head->next, game->m*game->n);
+        // and update moves_count (substract count of freed nodes)
+        game->moves_count = game->moves_count - countOfNodesFreed;
+    }
+
+    game->moves_head->next = newNode;
+    game->moves_count++;
+    newNode->prev = game->moves_head;
+    game->moves_head = newNode;
+    game->gameBoard = newNode->board;
+    return game->moves_head;
+}
+
+// returns the number of different cells between the boards
+int compareBoards(int **boardFrom, int **boardTo, int rows, int columns, bool shouldPrint, char* prefix) {
+    int from = 0;
+    int to = 0;
+    char from_str[10] = {0};
+    char to_str[10] = {0};
+    int counter = 0;
+    for (int row = 0; row < rows; row++) {
+        for (int col = 0; col < columns; col++) {
+            from = boardFrom[row][col];
+            to = boardTo[row][col];
+            if (from != to) {
+                counter ++;
+            }
+            if (shouldPrint && (from != to)) {
+
+                sprintf(from_str, "%d", from);
+                if (from == 0) {
+                    sprintf(from_str, "_");
+                }
+
+                sprintf(to_str, "%d", to);
+                if (to == 0) {
+                    sprintf(to_str, "_");
+                }
+
+                printf("%s %d,%d: from %s to %s\n", prefix, col+1, row+1, from_str, to_str);
+            }
+        }
+    }
+    return counter;
 }
 
 void printSeparatorRow(int m, int rows) {
@@ -290,7 +276,7 @@ void printBoard(Game* game, bool mark_errors) {
 		printf("|\n");
 
 		if ((row + 1) % game->m == 0) {
-			printSeparatorRow(game->n, game->rows);
+			printSeparatorRow(game->m, game->rows);
 		}
 
 	}
@@ -344,12 +330,13 @@ int** copyBoard(int **gameBoard, int rows, int columns) {
 }
 
 void autofill(Game* game) {
+    insertNewMove(game);
 	int** board_copy = copyBoard(game->gameBoard, game->rows, game->columns);
 	// iterate over the cells
 	for (int i = 0; i < game->rows; i++) {
 		for (int j = 0; j < game->columns; j++) {
 			if (board_copy[i][j] == 0) {
-				printf("cell %d,%d is empty\n", i + 1, j + 1);
+				// printf("cell %d,%d is empty\n", i + 1, j + 1);
 				// if empty, check for possible values
 
 				// go over the row and make a list of the values that are not in the row already
@@ -369,11 +356,6 @@ void autofill(Game* game) {
 
 					}
 				}
-				printf("These are the possible values in row %d\n", i);
-				for (int possible_row_value = 0; possible_row_value < game->columns; possible_row_value++) {
-					printf("%d ", possible_row_values[possible_row_value]);
-				}
-				printf("\n");
 
 				// go over the column and make a list of the values that are not in the column already
 				int* possible_col_values = (int *)calloc(game->rows, sizeof(int));
@@ -390,11 +372,6 @@ void autofill(Game* game) {
 						possible_col_values[board_copy[r][j] - 1] = 0;
 					}
 				}
-				printf("These are the possible values in column %d\n", j);
-				for (int possible_col_value = 0; possible_col_value < game->rows; possible_col_value++) {
-					printf("%d ", possible_col_values[possible_col_value]);
-				}
-				printf("\n");
 
 				// go over the box and make a list of the values that are not in the box already
 				int* possible_box_values = (int *)calloc(game->m*game->n, sizeof(int));
@@ -417,11 +394,6 @@ void autofill(Game* game) {
 						}
 					}
 				}
-				printf("These are the possible values in the box\n");
-				for (int possible_box_value = 0; possible_box_value < game->rows; possible_box_value++) {
-					printf("%d ", possible_box_values[possible_box_value]);
-				}
-				printf("\n");
 
 				// now we have 3 int arrays, with values 0,1
 				// 1 means the index is a possible value
@@ -510,7 +482,7 @@ int getPossibleValues(Game* game, int row, int col, int *possibleValidValues) {
 
     numberOfValidValues = 0;
     for (value = 1; value <= N; value++) {
-        if (isValidMove2(game->gameBoard, game->m, game->n, N, row, col, value)) {
+        if (isValidMove(game->gameBoard, game->m, game->n, N, row, col, value)) {
             possibleValidValues[numberOfValidValues] = value;
             numberOfValidValues++;
         }
@@ -683,33 +655,24 @@ bool isNoError(Game* game) {
 	return isNoError;
 }
 
+void free2DIntArray(int** array, int N) {
+    for (int i = 0; i < N; i++) {
+        free(array[i]);
+    }
+    free(array);
+}
+
 void destroyGame(Game* game) {
-	// free game board
-	for (int i = 0; i < game->n*game->m; i++) {
-	  free(game->gameBoard[i]);
-	}
-	free(game->gameBoard);
 
-	// free fixed cells
-	for (int i = 0; i < game->n*game->m; i++) {
-		free(game->fixedCells[i]);
-	}
-	free(game->fixedCells);
+    int N = game->n*game->m;
 
-	// free error cells
-	for (int i = 0; i < game->n*game->m; i++) {
-		free(game->errorCells[i]);
-	}
-	free(game->errorCells);
+    // free2DIntArray(game->gameBoard, N); // the game board is freed with the linked list
+    free2DIntArray(game->fixedCells, N);
+    free2DIntArray(game->errorCells, N);
+    free2DIntArray(game->gameSolution, N);
 
-	// free game solution
-	for (int i = 0; i < game->n*game->m; i++) {
-		free(game->gameSolution[i]);
-	}
-	free(game->gameSolution);
-
-	if (game->moves != NULL) {
-	    free(game->moves);
+	if (game->moves_anchor != NULL) {
+        freeLinkedList(game->moves_anchor, N);
 	}
 
 	// free game itself

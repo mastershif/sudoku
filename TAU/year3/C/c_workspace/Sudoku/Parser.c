@@ -48,10 +48,11 @@ char* extractArgsForSet(char* token, Command* command, int mn) {
 		}
 		int argument = atoi(token);
 		if (arguments_count == 0) {
-			command->X = argument;
+		    // according to published test1 the first arg is the col
+			command->Y = argument;
 		}
 		if (arguments_count == 1) {
-			command->Y = argument;
+			command->X = argument;
 		}
 		if (arguments_count == 2) {
 			if (strcmp(token, "0") != 0 && argument == 0) {

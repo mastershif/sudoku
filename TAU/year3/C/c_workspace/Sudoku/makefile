@@ -1,7 +1,7 @@
 CC = gcc
 OBJS = Game.o Parser.o Solver.o FileManager.o LinkedList.o ILPSolver.o main.o
 EXEC = SUDOKU
-COMP_FLAG = -std=c99 -Wall -Wextra -Werror -pedantic-errors -I/usr/local/lib/gurobi563/include -g
+COMP_FLAG = -std=c99 -Wall -Wextra -Werror -Wno-implicit -pedantic-errors -I/usr/local/lib/gurobi563/include -g
 
 BLDDIR = build
 

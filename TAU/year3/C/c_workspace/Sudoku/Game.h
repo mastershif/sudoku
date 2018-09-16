@@ -13,11 +13,14 @@ typedef struct game_t {
 	int columns;
 	int size;
 	int **gameBoard;
+	int **originalBoard;
 	int **fixedCells; // 1 represents this location has a fixed cell, 0 otherwise
 	int **errorCells; // 1 represents this location has an error, 0 otherwise
 	int **gameSolution;
-    Node *moves;
-    Node *current_move;
+    Node *moves_anchor;
+    Node *moves_head; // this points to the current move
+	int moves_count;
+	int moves_index;
 } Game;
 
 /**
@@ -53,6 +56,16 @@ void destroyGame(Game* game);
 void setValue(Game* game, int row, int col, int value);
 
 /**
+ * Adds a new move to the linked list of moves.
+ *
+ * @param game - The game
+ * @param X - The row where the new value was entered
+ * @param Y - The column where the new value was entered
+ * @param value - The value entered during the move
+ */
+Node* insertNewMove(Game *game);
+
+/**
  * Checks if a value can be put in the specified cell.
  * Checks both is the specified cell is not a fixed cell
  * and if the proposed value doesn't break the solution.
@@ -65,9 +78,8 @@ void setValue(Game* game, int row, int col, int value);
  * true  - if the given value can be put in the target cell
  * false - otherwise.
  */
-bool isValidMove(Game* game, int row,int col, int value);
 
-bool isValidMove2(int** board, int m, int n, int N, int row, int col, int value);
+bool isValidMove(int **board, int m, int n, int N, int row, int col, int value);
 
 /**
  * On success, the function prints the game board. If an error occurs, then the
@@ -96,15 +108,10 @@ int generate(Game* game, int x, int y);
 
 bool isNoError(Game* game);
 
-/**
- * Initiate the game board. Calls Solver.generatePuzzle(game) to initiate the game.
- *
- * @param game - the target game
- */
-void initBoard(Game* game);
-
-// int numSolutions(Game *game);
-
 int** copyBoard(int **gameBoard, int rows, int columns);
+
+void freeBoardMemory(int** board, int rows);
+
+int compareBoards(int **boardFrom, int **boardTo, int rows, int columns, bool shouldPrint, char* prefix);
 
 #endif /* GAME_H_ */

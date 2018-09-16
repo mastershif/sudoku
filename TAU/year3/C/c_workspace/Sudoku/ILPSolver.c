@@ -79,6 +79,14 @@ int solveWithILP(int m, int n, int **gameBoard, int** results) {
         return 1;
     }
 
+    // avoid printing to console
+    error = GRBsetintparam(env, GRB_INT_PAR_LOGTOCONSOLE, 0);
+    if (error) {
+        printf("ERROR %d GRBsetintparam(): %s\n", error, GRBgeterrormsg(env));
+        freeModel(solution, constraint1_indices, constraint2_indices, val1, val2, lower_bounds, var_type, env, model);
+        return 1;
+    }
+
     // create a new model
     error = GRBnewmodel(env, &model, "sudoku", N * N * N, NULL, lower_bounds, NULL,
                         var_type, NULL);
