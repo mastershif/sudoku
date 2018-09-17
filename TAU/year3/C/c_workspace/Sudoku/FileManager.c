@@ -145,7 +145,7 @@ int savePuzzleToFile(char* filename, Game* game, bool non_empty_cells_are_fixed)
 				fprintf(output, ".");
 			}
 			// print 1 space
-			fprintf(output, " "); // TODO: should I not print a space if end of row?
+			fprintf(output, " ");
 		}
 		fprintf(output, "\n");
 	}

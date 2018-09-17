@@ -5,7 +5,7 @@ COMP_FLAG = -std=c99 -Wall -Wextra -Werror -Wno-implicit -pedantic-errors -I/usr
 
 BLDDIR = build
 
-
+all: $(BLDDIR)/sudoku-console
 $(BLDDIR)/sudoku-console: $(BLDDIR)/main.o $(BLDDIR)/FileManager.o $(BLDDIR)/Game.o $(BLDDIR)/Parser.o $(BLDDIR)/Solver.o $(BLDDIR)/LinkedList.o $(BLDDIR)/ILPSolver.o
 	@echo " CC " $@
 	@mkdir -p $(dir $@)

@@ -1,10 +1,3 @@
-/*
- * Parcer.h
- *
- *  Created on: 30 May 2018
- *      Author: Shif
- */
-
 #ifndef PARSER_H_
 #define PARSER_H_
 #include <stdbool.h>
@@ -13,6 +6,10 @@
 #define MAX_LINE_LENGTH 256
 
 #define MISSING_ARGS "missing args"
+
+/**
+ * This module defines the command struct and handles parsing commands from the user.
+ */
 
 //a type used to represent a command
 typedef enum {
